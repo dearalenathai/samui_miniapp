@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ко Самуи — Гайд</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Nunito:wght@400;500;600;700&display=swap');
+
+  :root {
+    --ocean: #1A6B7C;
+    --ocean-dark: #0D4F5E;
+    --ocean-light: #E8F4F6;
+    --sunset: #E07B4A;
+    --sunset-light: #FDF0E8;
+    --palm: #2D6A4F;
+    --sand: #F5F0E8;
+    --white: #FFFFFF;
+    --text: #1C1C1C;
+    --text-muted: #6B6560;
+    --border: rgba(26,107,124,0.12);
+    --gold: #C8961A;
+    --gold-light: #FDF8E8;
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { font-family: 'Nunito', sans-serif; background: var(--sand); color: var(--text); height: 100%; overflow: hidden; }
+
+  .app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+  .screen { display: none; flex: 1; overflow-y: auto; flex-direction: column; }
+  .screen.active { display: flex; }
+  .scroll-content { flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    display: flex;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 2px; padding: 5px 2px; cursor: pointer; border: none;
+    background: none; color: var(--text-muted); font-family: 'Nunito', sans-serif;
+    font-size: 9px; font-weight: 700; transition: color 0.2s; letter-spacing: 0.3px;
+  }
+  .nav-item.active { color: var(--ocean); }
+  .nav-icon { font-size: 20px; line-height: 1; }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(160deg, #0D4F5E 0%, #1A6B7C 45%, #2A8A9E 100%);
+    padding: 44px 20px 36px;
+    position: relative; overflow: hidden; flex-shrink: 0;
+  }
+  .hero-waves { position: absolute; bottom: 0; left: 0; right: 0; height: 28px; background: var(--sand); clip-path: ellipse(55% 100% at 50% 100%); }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; padding: 4px 12px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: #fff; line-height: 1.1; margin-bottom: 6px; }
+  .hero-subtitle { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+
+  /* ─── HOME ─── */
+  .home-pad { padding: 20px 16px 16px; }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ocean); margin-bottom: 12px; }
+
+  /* ─── AUTHOR CARD ─── */
+  .author-card { background: var(--ocean-dark); border-radius: var(--radius); padding: 16px; color: #fff; display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .author-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--sunset); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  .author-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .author-desc { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+
+  /* ─── PREMIUM BANNER ─── */
+  .premium-banner {
+    background: linear-gradient(135deg, #1a5c2e, #2D6A4F);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+    display: flex; gap: 12px; align-items: center; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .premium-banner:active { opacity: 0.85; }
+  .premium-banner-icon { font-size: 28px; flex-shrink: 0; }
+  .premium-banner-text { color: #fff; }
+  .premium-banner-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .premium-banner-sub { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+  .premium-banner-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+
+  /* ─── PREMIUM STATUS (when paid) ─── */
+  .premium-status { background: var(--gold-light); border: 1px solid rgba(200,150,26,0.25); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .premium-status-icon { font-size: 22px; }
+  .premium-status-text { font-size: 13px; font-weight: 600; color: var(--gold); }
+
+  /* ─── QUICK CARDS ─── */
+  .quick-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .quick-card { background: var(--white); border-radius: var(--radius); padding: 14px 12px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s; display: flex; flex-direction: column; gap: 5px; }
+  .quick-card:active { transform: scale(0.97); }
+  .quick-card-icon { font-size: 24px; }
+  .quick-card-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .quick-card-sub { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
+  /* ─── CARDS ─── */
+  .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card-body { font-size: 13px; color: #444; line-height: 1.7; }
+
+  /* ─── TIP ─── */
+  .tip { background: var(--ocean-light); border-left: 3px solid var(--ocean); border-radius: 0 10px 10px 0; padding: 12px 14px; margin: 12px 0; font-size: 13px; color: #2a4a52; line-height: 1.6; }
+  .tip strong { color: var(--ocean); }
+
+  /* ─── SCREEN HEADER ─── */
+  .screen-header { background: var(--ocean-dark); padding: 44px 20px 18px; flex-shrink: 0; }
+  .screen-header-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: #fff; margin-bottom: 3px; }
+  .screen-header-sub { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+  /* ─── SEASON GRID ─── */
+  .season-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .season-card { padding: 12px; border-radius: var(--radius-sm); text-align: center; }
+  .s-best { background: #E8F4EE; border: 1px solid #b0ddc0; }
+  .s-ok { background: var(--ocean-light); border: 1px solid #b5dce6; }
+  .s-hot { background: #FDF5E8; border: 1px solid #f0d8a8; }
+  .s-rain { background: var(--sunset-light); border: 1px solid #f0c8a8; }
+  .season-emoji { font-size: 20px; margin-bottom: 4px; }
+  .season-months { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+  .season-label { font-size: 10px; color: var(--text-muted); }
+
+  /* ─── DISTRICT GRID ─── */
+  .district-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .district-card { background: var(--white); border-radius: var(--radius-sm); padding: 12px; border: 1px solid var(--border); }
+  .district-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .district-vibe { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; }
+  .dtags { display: flex; flex-wrap: wrap; gap: 3px; }
+  .dtag { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: var(--sand); color: var(--text-muted); font-weight: 600; }
+
+  /* ─── LIST ROW ─── */
+  .list-row { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .list-row:last-child { border-bottom: none; }
+  .row-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--ocean-light); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .row-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .row-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+  .price-pill { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--ocean); white-space: nowrap; background: var(--ocean-light); padding: 3px 8px; border-radius: 100px; flex-shrink: 0; }
+
+  /* ─── BADGES ─── */
+  .badge { display: inline-flex; padding: 3px 8px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+  .badge-ocean { background: var(--ocean-light); color: var(--ocean); }
+  .badge-sunset { background: var(--sunset-light); color: var(--sunset); }
+  .badge-palm { background: #E8F4EE; color: var(--palm); }
+  .badge-gold { background: var(--gold-light); color: var(--gold); }
+
+  /* ─── SPOT CARD ─── */
+  .spot-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; margin-bottom: 10px; }
+  .spot-bar { height: 4px; }
+  .spot-body { padding: 12px 14px; }
+  .spot-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .spot-desc { font-size: 12px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+  .spot-meta { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  /* ─── BEACH CARD ─── */
+  .beach-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 8px; }
+  .beach-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .beach-num { width: 24px; height: 24px; border-radius: 50%; background: var(--ocean); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .beach-name { font-size: 13px; font-weight: 700; }
+  .beach-name-en { font-size: 10px; color: var(--text-muted); font-weight: 400; }
+  .beach-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ─── FOOD ─── */
+  .food-cat { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ocean); padding-bottom: 7px; border-bottom: 1px solid var(--border); margin-bottom: 7px; }
+  .food-section { margin-bottom: 14px; }
+  .rest-row { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .rest-row:last-child { border-bottom: none; }
+  .rest-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .rest-name { font-size: 13px; font-weight: 500; flex: 1; }
+  .rest-area { font-size: 10px; color: var(--text-muted); }
+
+  /* ─── PRACTICAL ─── */
+  .prac-row { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+  .prac-row:last-child { border-bottom: none; }
+  .prac-title { font-weight: 700; margin-bottom: 2px; font-size: 13px; }
+
+  /* ─── INFO GRID ─── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .info-card { background: var(--white); border-radius: var(--radius-sm); padding: 11px; border: 1px solid var(--border); }
+  .info-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; font-weight: 700; }
+  .info-value { font-size: 13px; font-weight: 700; }
+  .info-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  /* ─── LOCK OVERLAY ─── */
+  .lock-overlay {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1.5px dashed rgba(200,150,26,0.4);
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .lock-icon { font-size: 32px; margin-bottom: 10px; }
+  .lock-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .lock-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+  .lock-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: linear-gradient(135deg, #C8961A, #a87a10);
+    color: #fff; border: none; border-radius: 100px;
+    padding: 12px 24px; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: 'Nunito', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .lock-btn:active { opacity: 0.85; }
+
+  /* ─── SCREEN PAD ─── */
+  .screen-pad { padding: 16px 16px 24px; }
+
+  /* ─── LINKS ─── */
+  a { color: var(--ocean); text-decoration: none; }
+
+  /* ─── UPDATE BANNER ─── */
+  .update-banner { background: linear-gradient(135deg, #E07B4A, #C8613A); border-radius: var(--radius); padding: 14px; color: #fff; display: flex; gap: 10px; margin-bottom: 10px; }
+  .update-banner-icon { font-size: 22px; flex-shrink: 0; }
+  .update-banner-text { font-size: 12px; line-height: 1.6; }
+  .update-banner-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══ HOME ═══ -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="hero-badge">🌴 Тревел-гайд 2025</div>
+      <div class="hero-title">Ко Самуи</div>
+      <div class="hero-subtitle">Всё об острове — для жизни и путешествий</div>
+      <div class="hero-waves"></div>
+    </div>
+    <div class="scroll-content">
+      <div class="home-pad">
+
+        <div class="author-card">
+          <div class="author-avatar">A</div>
+          <div>
+            <div class="author-name">Алена Дорр</div>
+            <div class="author-desc">Живу на Самуи и делюсь личным опытом. Каждая локация проверена лично.</div>
+          </div>
+        </div>
+
+        <!-- Premium status shown dynamically -->
+        <div id="premium-status-block" style="display:none" class="premium-status">
+          <div class="premium-status-icon">⭐</div>
+          <div class="premium-status-text">Полный доступ активен</div>
+        </div>
+        <div id="premium-promo-block" class="premium-banner" onclick="requestPremium()">
+          <div class="premium-banner-icon">⭐</div>
+          <div class="premium-banner-text">
+            <div class="premium-banner-title">Получить полный доступ</div>
+            <div class="premium-banner-sub">Секретные пляжи, все рестораны, смотровые, советы</div>
+          </div>
+          <div class="premium-banner-arrow">›</div>
+        </div>
+
+        <p class="section-label">Быстрая навигация</p>
+        <div class="quick-cards">
+          <div class="quick-card" onclick="switchTab('sights')">
+            <div class="quick-card-icon">🛕</div>
+            <div class="quick-card-title">Что смотреть</div>
+            <div class="quick-card-sub">Топ мест и смотровые</div>
+          </div>
+          <div class="quick-card" onclick="switchTab('beaches')">
+            <div class="quick-card-icon">🏖</div>
+            <div class="quick-card-title">Пляжи</div>
+            <div class="quick-card-sub">Популярные и секретные</div>
+          </div>
+          <div class="quick-card" onclick="switchTab('transport')">
+            <div class="quick-card-icon">🛵</div>
+            <div class="quick-card-title">Транспорт</div>
+            <div class="quick-card-sub">Как добраться и ездить</div>
+          </div>
+          <div class="quick-card" onclick="switchTab('food')">
+            <div class="quick-card-icon">🍜</div>
+            <div class="quick-card-title">Еда</div>
+            <div class="quick-card-sub">Рестораны по районам</div>
+          </div>
+        </div>
+
+        <p class="section-label">Когда ехать</p>
+        <div class="card">
+          <div class="season-grid">
+            <div class="season-card s-best"><div class="season-emoji">☀️</div><div class="season-months">Июнь — Авг</div><div class="season-label">Лучшее время</div></div>
+            <div class="season-card s-ok"><div class="season-emoji">🌊</div><div class="season-months">Янв — Март</div><div class="season-label">Хорошо для отдыха</div></div>
+            <div class="season-card s-hot"><div class="season-emoji">🔥</div><div class="season-months">Март — Июнь</div><div class="season-label">Очень жарко</div></div>
+            <div class="season-card s-rain"><div class="season-emoji">🌧</div><div class="season-months">Окт — Ноябрь</div><div class="season-label">Сезон дождей</div></div>
+          </div>
+          <div class="tip" style="margin-bottom:0"><strong>Совет автора:</strong> Лучшее время — лето. Самое красивое море, яркие краски. Мало туристов и ниже цены.</div>
+        </div>
+
+        <p class="section-label">Районы острова</p>
+        <div class="district-grid">
+          <div class="district-card"><div class="district-name">Чавенг</div><div class="district-vibe">Самый оживлённый</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">шопинг</span><span class="dtag">ночная жизнь</span></div></div>
+          <div class="district-card"><div class="district-name">Ламаи</div><div class="district-vibe">Спокойнее Чавенга</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">кафе</span><span class="dtag">рынки</span></div></div>
+          <div class="district-card"><div class="district-name">Бопхут</div><div class="district-vibe">Рыбацкий колорит</div><div class="dtags"><span class="dtag">рестораны</span><span class="dtag">атмосфера</span></div></div>
+          <div class="district-card"><div class="district-name">Мае Нам</div><div class="district-vibe">Тихий север</div><div class="dtags"><span class="dtag">длинный пляж</span><span class="dtag">дёшево</span></div></div>
+          <div class="district-card"><div class="district-name">Талинг Нгам</div><div class="district-vibe">Уединённый запад</div><div class="dtags"><span class="dtag">закаты</span><span class="dtag">виллы</span></div></div>
+          <div class="district-card"><div class="district-name">Натон</div><div class="district-vibe">Центр острова</div><div class="dtags"><span class="dtag">паром</span><span class="dtag">банки</span></div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TRANSPORT ═══ -->
+  <div class="screen" id="screen-transport">
+    <div class="screen-header">
+      <div class="screen-header-title">Транспорт</div>
+      <div class="screen-header-sub">Как добраться и передвигаться</div>
+    </div>
+    <div class="scroll-content screen-pad">
+      <div class="card">
+        <div class="card-title">✈️ Из Бангкока</div>
+        <div class="list-row">
+          <div class="row-icon">✈️</div>
+          <div><div class="row-title">Самолёт Bangkok Airways</div><div class="row-desc">1 час. Напрямую на <a href="https://www.bangkokair.com">bangkokair.com</a></div></div>
+          <div class="price-pill">3500–4000 ฿</div>
+        </div>
+        <div class="list-row">
+          <div class="row-icon">🚌</div>
+          <div><div class="row-title">Автобус VIP + паром</div><div class="row-desc">16 часов. Бангкок → Донсак → паром. <a href="https://12go.tp.st/jYqV9PgZ">12go.tp.st</a></div></div>
+          <div class="price-pill">1200–1500 ฿</div>
+        </div>
+      </div>
+      <div class="tip"><strong>Совет:</strong> Берите VIP-автобус — сиденья раскладываются. Возьмите тёплую вещь!</div>
+      <div class="card">
+        <div class="card-title">🛵 По острову</div>
+        <div class="list-row">
+          <div class="row-icon">🛵</div>
+          <div><div class="row-title">Аренда байка</div><div class="row-desc">Лучший вариант. Yamaha NMAX с АБС. Обязательно шлем! Не паркуйтесь у красного бордюра — штраф.</div></div>
+          <div class="price-pill">от 200 ฿/д</div>
+        </div>
+        <div class="list-row">
+          <div class="row-icon">🚗</div>
+          <div><div class="row-title">Аренда авто</div><div class="row-desc"><a href="https://rentcarsamui.com">rentcarsamui.com</a> — бронь с доставкой.</div></div>
+          <div class="price-pill">от 1000 ฿/д</div>
+        </div>
+        <div class="list-row">
+          <div class="row-icon">🚐</div>
+          <div><div class="row-title">Сонгтео</div><div class="row-desc">Пикап с сиденьями в кузове. Кольцо острова, нет расписания.</div></div>
+          <div class="price-pill">~200 ฿</div>
+        </div>
+        <div class="list-row">
+          <div class="row-icon">📱</div>
+          <div><div class="row-title">GRAB такси</div><div class="row-desc">Единственное рабочее приложение.</div></div>
+          <div class="price-pill">от 500 ฿</div>
+        </div>
+      </div>
+      <div class="tip"><strong>Важно:</strong> Не оставляйте паспорт в залог при аренде. При получении снимайте царапины на видео.</div>
+    </div>
+  </div>
+
+  <!-- ═══ BEACHES ═══ -->
+  <div class="screen" id="screen-beaches">
+    <div class="screen-header">
+      <div class="screen-header-title">Пляжи Самуи</div>
+      <div class="screen-header-sub">Популярные и секретные места</div>
+    </div>
+    <div class="scroll-content screen-pad">
+
+      <div class="update-banner">
+        <div class="update-banner-icon">📸</div>
+        <div class="update-banner-text"><strong>Скоро: фото каждого пляжа</strong>Раздел обновится после авторской съёмки.</div>
+      </div>
+
+      <!-- FREE beaches -->
+      <p class="section-label">Популярные пляжи</p>
+
+      <div class="beach-card">
+        <div class="beach-header"><div class="beach-num">1</div><div><div class="beach-name">Чавенг <span class="beach-name-en">Chaweng</span></div></div><span class="badge badge-ocean" style="margin-left:auto">5 км</span></div>
+        <div class="beach-desc">Самый длинный и известный. Белый мелкий песок — лучший на острове. Много людей и инфраструктуры.</div>
+      </div>
+      <div class="beach-card">
+        <div class="beach-header"><div class="beach-num">2</div><div><div class="beach-name">Ламаи <span class="beach-name-en">Lamai</span></div></div><span class="badge badge-ocean" style="margin-left:auto">5 км</span></div>
+        <div class="beach-desc">Второй по размеру. Центральный участок — лучший вход в море на острове! Крутой уклон, глубина резко возрастает.</div>
+      </div>
+      <div class="beach-card">
+        <div class="beach-header"><div class="beach-num">3</div><div><div class="beach-name">Мае Нам <span class="beach-name-en">Mae Nam</span></div></div></div>
+        <div class="beach-desc">Длинный тихий пляж на севере. Много тени, мелкое дно. Идеально для семей с детьми. Вид на Ко Пханган.</div>
+      </div>
+      <div class="beach-card">
+        <div class="beach-header"><div class="beach-num">4</div><div><div class="beach-name">Бопхут <span class="beach-name-en">Bophut</span></div></div></div>
+        <div class="beach-desc">Жёлтый крупный песок. Красивые закаты. Рядом рыбацкая деревня с ресторанами.</div>
+      </div>
+      <div class="beach-card">
+        <div class="beach-header"><div class="beach-num">5</div><div><div class="beach-name">Чонг Мон <span class="beach-name-en">Choeng Mon</span></div></div></div>
+        <div class="beach-desc">Уютная бухта на северо-востоке. Серый мелкий песок, без волн. Хорош для семей.</div>
+      </div>
+
+      <!-- PREMIUM beaches -->
+      <div id="premium-beaches-locked" class="lock-overlay">
+        <div class="lock-icon">🔐</div>
+        <div class="lock-title">Секретные пляжи — в премиуме</div>
+        <div class="lock-desc">Silver Beach, Secret Beach, Baan Tai и ещё 3 скрытых места с координатами. Только те, кто знает.</div>
+        <button class="lock-btn" onclick="requestPremium()">⭐ Открыть за Stars</button>
+      </div>
+
+      <div id="premium-beaches-content" style="display:none">
+        <p class="section-label" style="margin-top:4px">⭐ Секретные и особые пляжи</p>
+        <div class="beach-card" style="border-color: #C8961A; border-width:1.5px">
+          <div class="beach-header"><div class="beach-num" style="background:#C8961A">✨</div><div><div class="beach-name">Silver Beach <span class="beach-name-en">Thongtakian</span></div></div><span class="badge badge-gold" style="margin-left:auto">Топ</span></div>
+          <div class="beach-desc">Самая красивая бухта на Самуи — виды как на Сейшелах. Ярко-бирюзовая вода, светлый песок. За камнями справа — уединённый пляжик для интровертов. Осторожно: красные кусучие муравьи!</div>
+        </div>
+        <div class="beach-card" style="border-color: #C8961A; border-width:1.5px">
+          <div class="beach-header"><div class="beach-num" style="background:#C8961A">🤫</div><div><div class="beach-name">Secret Beach</div></div><span class="badge badge-gold" style="margin-left:auto">Секрет</span></div>
+          <div class="beach-desc">Самое дикое место на Самуи. 600 м берега с дикими пальмами, без туристов. Только для уверенных байкеров — крутой подъём. Байк паркуйте наверху, вниз не съезжайте. Приезжайте рано утром или на закате.</div>
+        </div>
+        <div class="beach-card" style="border-color: #C8961A; border-width:1.5px">
+          <div class="beach-header"><div class="beach-num" style="background:#C8961A">🌴</div><div><div class="beach-name">Бан Тай <span class="beach-name-en">Baan Tai</span></div></div></div>
+          <div class="beach-desc">Уютный 1-километровый пляж бирюзового цвета. Без волн, пологое дно. По грудь через ~30 м. Отличный для отдыха с детьми.</div>
+        </div>
+        <div class="beach-card" style="border-color: #C8961A; border-width:1.5px">
+          <div class="beach-header"><div class="beach-num" style="background:#C8961A">🌅</div><div><div class="beach-name">Талинг Нгам — центр</div></div></div>
+          <div class="beach-desc">Белый песок, прозрачная голубая вода до 11:00. Лучшие закаты острова. Неглубоко и каменисто — для фото, не для плавания.</div>
+        </div>
+        <div class="beach-card" style="border-color: #C8961A; border-width:1.5px">
+          <div class="beach-header"><div class="beach-num" style="background:#1A6B7C">🧘</div><div><div class="beach-name">Уединённый пляж (авторский)</div></div></div>
+          <div class="beach-desc">Личное секретное место автора. Практически никогда нет людей. Рядом пальмовая роща. Вода мутная — едут за природой и тишиной. Координаты в боте.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ SIGHTS ═══ -->
+  <div class="screen" id="screen-sights">
+    <div class="screen-header">
+      <div class="screen-header-title">Что посмотреть</div>
+      <div class="screen-header-sub">Достопримечательности и острова</div>
+    </div>
+    <div class="scroll-content screen-pad">
+
+      <!-- FREE sights -->
+      <p class="section-label">Главные места</p>
+      <div class="spot-card">
+        <div class="spot-bar" style="background:#1A6B7C"></div>
+        <div class="spot-body">
+          <div class="spot-name">Big Buddha (Wat Phra Yai)</div>
+          <div class="spot-desc">12-метровая статуя — душа Самуи. Приезжайте рано утром или на закате. Прикройте плечи!</div>
+          <div class="spot-meta"><span class="badge badge-palm">Бесплатно</span><span class="badge badge-ocean">Бопхут</span></div>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-bar" style="background:#9B59B6"></div>
+        <div class="spot-body">
+          <div class="spot-name">Wat Plai Laem</div>
+          <div class="spot-desc">Три храма на искусственном озере. Богиня Гуаньинь с 18 руками. Красиво и атмосферно.</div>
+          <div class="spot-meta"><span class="badge badge-palm">Бесплатно</span><span class="badge badge-ocean">Рядом с Big Buddha</span></div>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-bar" style="background:#E07B4A"></div>
+        <div class="spot-body">
+          <div class="spot-name">Overlap Stone</div>
+          <div class="spot-desc">Камень над обрывом в горах Ламаи. Самое эффектное фото на острове. Нужен уверенный байкер.</div>
+          <div class="spot-meta"><span class="badge badge-sunset">200 ฿</span><span class="badge badge-ocean">Горы Ламаи</span></div>
+        </div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-bar" style="background:#2ecc71"></div>
+        <div class="spot-body">
+          <div class="spot-name">Hin Ta Hin Yai</div>
+          <div class="spot-desc">Камни "Бабушка и Дедушка". Красивая бухта рядом. Мини-базар с кокосовым мороженым.</div>
+          <div class="spot-meta"><span class="badge badge-palm">Бесплатно</span><span class="badge badge-ocean">Ламаи</span></div>
+        </div>
+      </div>
+
+      <!-- PREMIUM sights -->
+      <div id="premium-sights-locked" class="lock-overlay">
+        <div class="lock-icon">🔐</div>
+        <div class="lock-title">Смотровые и скрытые места — в премиуме</div>
+        <div class="lock-desc">5 смотровых площадок с описаниями и советами + Fisherman's Village, шоу и вечерние активности.</div>
+        <button class="lock-btn" onclick="requestPremium()">⭐ Открыть за Stars</button>
+      </div>
+
+      <div id="premium-sights-content" style="display:none">
+        <p class="section-label" style="margin-top:4px">⭐ Смотровые площадки</p>
+        <div class="card" style="margin-bottom:12px">
+          <div class="list-row">
+            <div class="row-icon">⛩️</div>
+            <div><div class="row-title">Pagoda Khao Hua Jook</div><div class="row-desc">Пагода + смотровая. Вид на озеро Чавенг и аэропорт. Самолёты взлетают прямо перед вами.</div></div>
+            <div class="price-pill">20 ฿</div>
+          </div>
+          <div class="list-row">
+            <div class="row-icon">🌊</div>
+            <div><div class="row-title">Lad Koh View Point</div><div class="row-desc">Обустроенная площадка у кольцевой дороги. Только в солнечную погоду.</div></div>
+            <div class="price-pill">Бесплатно</div>
+          </div>
+          <div class="list-row">
+            <div class="row-icon">🪨</div>
+            <div><div class="row-title">Elephant Rock</div><div class="row-desc">Вид на бухту Silver Beach. Ориентир — The Cliff Bar and Grill.</div></div>
+            <div class="price-pill">Бесплатно</div>
+          </div>
+          <div class="list-row">
+            <div class="row-icon">🏔</div>
+            <div><div class="row-title">Pra Buddha Dipankara</div><div class="row-desc">Самая высокая точка. Вид на весь остров. Стартуйте от Samui Storage for безопасного пути.</div></div>
+            <div class="price-pill">Бесплатно</div>
+          </div>
+          <div class="list-row">
+            <div class="row-icon">🤫</div>
+            <div><div class="row-title">Секретная площадка у Conrad</div><div class="row-desc">Крутой подъём, но для опытных байкеров не проблема. Мало кто знает.</div></div>
+            <div class="price-pill">Бесплатно</div>
+          </div>
+        </div>
+
+        <p class="section-label">Вечерние активности</p>
+        <div class="spot-card">
+          <div class="spot-bar" style="background:#E07B4A"></div>
+          <div class="spot-body">
+            <div class="spot-name">Fire Show на Bo Phut</div>
+            <div class="spot-desc">Самое красивое фаер-шоу у ресторана Coco Tam's. Приедьте заранее занять место. Начало: 19:00 и 21:00.</div>
+            <div class="spot-meta"><span class="badge badge-palm">Бесплатно</span></div>
+          </div>
+        </div>
+        <div class="spot-card">
+          <div class="spot-bar" style="background:#9B59B6"></div>
+          <div class="spot-body">
+            <div class="spot-name">Divas Cabaret Show</div>
+            <div class="spot-desc">Известное шоу трансвеститов в приятной атмосфере. Экстравагантные костюмы, яркие танцевальные номера. Достойно.</div>
+            <div class="spot-meta"><span class="badge badge-sunset">270–380 ฿</span></div>
+          </div>
+        </div>
+        <div class="spot-card">
+          <div class="spot-bar" style="background:#1A6B7C"></div>
+          <div class="spot-body">
+            <div class="spot-name">Muay Thai — Petch Bancha Stadium</div>
+            <div class="spot-desc">Тайский бокс — национальный спорт под патронажем Королевской семьи. Зрелищные шоу с лучшими бойцами Самуи.</div>
+            <div class="spot-meta"><span class="badge badge-sunset">1500–2000 ฿</span></div>
+          </div>
+        </div>
+
+        <p class="section-label" style="margin-top:4px">🚢 Соседние острова</p>
+        <div class="info-grid">
+          <div class="info-card"><div class="info-label">Ко Пханган</div><div class="info-value">Full Moon Party</div><div class="info-sub">Паром ~30 мин. Йога, природа, тусовки</div></div>
+          <div class="info-card"><div class="info-label">Ко Тао</div><div class="info-value">Дайвинг №1</div><div class="info-sub">Лучшие кораллы. Паром ~2 часа</div></div>
+          <div class="info-card"><div class="info-label">Ангтонг</div><div class="info-value">Нац. парк</div><div class="info-sub">42 острова. Каяк, снорклинг</div></div>
+          <div class="info-card"><div class="info-label">Ко Мат Сум</div><div class="info-value">Остров свиней</div><div class="info-sub">Белый пляж, фото с поросятами</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ FOOD ═══ -->
+  <div class="screen" id="screen-food">
+    <div class="screen-header">
+      <div class="screen-header-title">Где поесть</div>
+      <div class="screen-header-sub">Рестораны и кафе по районам</div>
+    </div>
+    <div class="scroll-content screen-pad">
+
+      <div class="card">
+        <div class="food-section">
+          <div class="food-cat">🌶 Тайская и морская кухня</div>
+          <div class="rest-row"><div class="rest-dot" style="background:#1A6B7C"></div><div class="rest-name">Bang Po Seafood</div><div class="rest-area">Мае Нам</div></div>
+          <div class="rest-row"><div class="rest-dot" style="background:#1A6B7C"></div><div class="rest-name">The Hut Lamai</div><div class="rest-area">Ламаи</div></div>
+          <div class="rest-row"><div class="rest-dot" style="background:#1A6B7C"></div><div class="rest-name">The Shrimp Shack</div><div class="rest-area">Чавенг</div></div>
+        </div>
+        <div class="food-section">
+          <div class="food-cat">☕ Красивые кафе</div>
+          <div class="rest-row"><div class="rest-dot" style="background:#E07B4A"></div><div class="rest-name">Blooming Gallery Cafe</div><div class="rest-area">Мае Нам</div></div>
+          <div class="rest-row"><div class="rest-dot" style="background:#E07B4A"></div><div class="rest-name">Annie Sweetery & Eatery</div><div class="rest-area">Ламаи / Бопхут</div></div>
+        </div>
+      </div>
+
+      <!-- PREMIUM food -->
+      <div id="premium-food-locked" class="lock-overlay">
+        <div class="lock-icon">🔐</div>
+        <div class="lock-title">Полный список ресторанов — в премиуме</div>
+        <div class="lock-desc">Веганские кафе, здоровое питание, пекарни, магазины фермерских продуктов и доставка.</div>
+        <button class="lock-btn" onclick="requestPremium()">⭐ Открыть за Stars</button>
+      </div>
+
+      <div id="premium-food-content" style="display:none">
+        <div class="card" style="margin-top:12px">
+          <div class="food-section">
+            <div class="food-cat">🌱 Здоровое питание и веган</div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">Vikasa Life Cafe</div><div class="rest-area">Чавенг</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">Punch It Healthy Cafe</div><div class="rest-area">Ламаи</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">Wild Tribe Cafe</div><div class="rest-area">Бопхут</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">Pure Vegan Heaven</div><div class="rest-area">Чавенг</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">Lamphu Kitchen</div><div class="rest-area">Бопхут</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#2D6A4F"></div><div class="rest-name">My Vegan Food Shop</div><div class="rest-area">Талинг Нгам</div></div>
+          </div>
+          <div class="food-section">
+            <div class="food-cat">🛒 Специальные магазины</div>
+            <div class="rest-row"><div class="rest-dot" style="background:#888"></div><div class="rest-name">BM Grocery — рус. и европ. продукты</div><div class="rest-area">Банграк / Ламаи</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#888"></div><div class="rest-name">Sourdough Bread Bakery</div><div class="rest-area">Central Food Hall</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#888"></div><div class="rest-name">Lucky Cow Samui</div><div class="rest-area">Молочные продукты</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#888"></div><div class="rest-name">Samui Chocolate</div><div class="rest-area">Натуральный шоколад</div></div>
+            <div class="rest-row"><div class="rest-dot" style="background:#888"></div><div class="rest-name">Samui Health Shop by Lamphu</div><div class="rest-area">Органика</div></div>
+          </div>
+          <div class="food-section" style="margin-bottom:0">
+            <div class="food-cat">🚚 Доставка</div>
+            <div class="card-body" style="font-size:12px">
+              📱 GrabFood, Foodpanda, Ant Delivery<br>
+              🌐 <a href="https://www.hangoversamui.com">hangoversamui.com</a> — рестораны без приложений. Доставка 100 ฿
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PRACTICAL ═══ -->
+  <div class="screen" id="screen-practical">
+    <div class="screen-header">
+      <div class="screen-header-title">Практика</div>
+      <div class="screen-header-sub">Деньги, связь, медицина, визы</div>
+    </div>
+    <div class="scroll-content screen-pad">
+
+      <div class="card">
+        <div class="card-title">💱 Деньги и обмен</div>
+        <div class="card-body">
+          Лучший курс — в обменниках <strong>Central Samui</strong> или банках в Lotus's. Аэропорт — невыгодно.<br><br>
+          Везите <strong>доллары или евро</strong>. Рубли обменять почти невозможно.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📱 Мобильная связь</div>
+        <div class="card-body">
+          AIS, DTAC, TrueMover — без разницы. Сим в 7/11 от 49 ฿.<br><br>
+          <strong>Лайфхак для долгосрочных:</strong> DTAC на год через Lazada. Ищите "dtac 1 year internet sim card". От 1000 ฿.
+        </div>
+      </div>
+
+      <!-- PREMIUM practical -->
+      <div id="premium-practical-locked" class="lock-overlay">
+        <div class="lock-icon">🔐</div>
+        <div class="lock-title">Медицина, визы, чаты — в премиуме</div>
+        <div class="lock-desc">Полный список клиник с ценами, проверенные визовые компании, ссылки на Telegram-чаты русскоязычного сообщества.</div>
+        <button class="lock-btn" onclick="requestPremium()">⭐ Открыть за Stars</button>
+      </div>
+
+      <div id="premium-practical-content" style="display:none">
+        <div class="card">
+          <div class="card-title">🏥 Медицина</div>
+          <div class="prac-row"><div class="prac-title">🏛 Koh Samui Hospital</div>Гос. больница. Без страховки — дешевле всего.</div>
+          <div class="prac-row"><div class="prac-title">🩺 Samui Home Clinic</div>Небольшие вопросы. Приём от 300 ฿.</div>
+          <div class="prac-row"><div class="prac-title">🔬 Samui Clinic Laboratory</div>Анализы.</div>
+          <div class="prac-row"><div class="prac-title">🏥 Bangkok Hospital Samui</div>Главный коммерческий. Только по страховке — очень дорого.</div>
+          <div class="prac-row"><div class="prac-title">👩‍⚕️ Rapheepan Gynaecology Clinic</div>Гинекология. От 1500 ฿.</div>
+          <div class="prac-row" style="border:none"><div class="prac-title">🦷 Floss Dental Office</div>Лучшая стоматология на острове.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🛂 Визы</div>
+          <div class="prac-row"><div class="prac-title">🚌 Бордер-ран</div>Компании: SamuiVisaRun (лучше), HDVisa. Бронируйте заранее!</div>
+          <div class="prac-row"><div class="prac-title">🎓 Студенческая виза</div>KSTVS, SamuiLanguageSchool</div>
+          <div class="prac-row" style="border:none"><div class="prac-title">💼 Бизнес-виза</div>Khun Jun: +66 61 536 1653</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🏢 Гос. учреждения</div>
+          <div class="prac-row"><div class="prac-title">Samui Immigration Office</div>Все визовые вопросы, продление, сертификат резидента.</div>
+          <div class="prac-row"><div class="prac-title">Transport Office</div>Водительские права.</div>
+          <div class="prac-row" style="border:none"><div class="prac-title">Ko Samui District Office</div>Налоговый номер.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💬 Telegram-чаты</div>
+          <div class="card-body" style="line-height:2.2; font-size:13px">
+            <a href="https://t.me/SamuiGroup">@SamuiGroup</a>, <a href="https://t.me/samuipar">@samuipar</a>, <a href="https://t.me/samui_thailand_rai">@samui_thailand_rai</a> — общие вопросы<br>
+            <a href="https://t.me/arendakosamui">@arendakosamui</a> — аренда жилья<br>
+            <a href="https://t.me/hikinginnnature">@hikinginnnature</a> — походы<br>
+            <a href="https://t.me/samuibeauty">@samuibeauty</a> — бьюти и отзывы
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM NAV ═══ -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">🏠</span>Главная</button>
+    <button class="nav-item" id="nav-transport" onclick="switchTab('transport')"><span class="nav-icon">🛵</span>Транспорт</button>
+    <button class="nav-item" id="nav-beaches" onclick="switchTab('beaches')"><span class="nav-icon">🏖</span>Пляжи</button>
+    <button class="nav-item" id="nav-sights" onclick="switchTab('sights')"><span class="nav-icon">🛕</span>Места</button>
+    <button class="nav-item" id="nav-food" onclick="switchTab('food')"><span class="nav-icon">🍜</span>Еда</button>
+    <button class="nav-item" id="nav-practical" onclick="switchTab('practical')"><span class="nav-icon">📋</span>Практика</button>
+  </nav>
+
+</div>
+
+<script>
+  let isPremium = false;
+
+  // ─── Telegram WebApp init ───
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.expand();
+    tg.ready();
+    tg.setHeaderColor('#0D4F5E');
+    tg.setBackgroundColor('#F5F0E8');
+
+    // Check premium from URL param (set by bot when opening)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('premium') === '1') {
+      setPremium(true);
+    }
+  }
+
+  function setPremium(val) {
+    isPremium = val;
+
+    // Toggle status blocks on home
+    const statusBlock = document.getElementById('premium-status-block');
+    const promoBlock = document.getElementById('premium-promo-block');
+    if (statusBlock) statusBlock.style.display = val ? 'flex' : 'none';
+    if (promoBlock) promoBlock.style.display = val ? 'none' : 'flex';
+
+    // Toggle all locked sections
+    const sections = ['beaches', 'sights', 'food', 'practical'];
+    sections.forEach(s => {
+      const locked = document.getElementById(`premium-${s}-locked`);
+      const content = document.getElementById(`premium-${s}-content`);
+      if (locked) locked.style.display = val ? 'none' : 'block';
+      if (content) content.style.display = val ? 'block' : 'none';
+    });
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    document.getElementById('screen-' + name)
+      .querySelector('.scroll-content')?.scrollTo(0, 0);
+  }
+
+  function requestPremium() {
+    if (tg) {
+      // Close the Mini App and send data to bot to initiate payment
+      tg.sendData(JSON.stringify({ action: 'buy_premium' }));
+    } else {
+      // Fallback for browser testing
+      alert('В Telegram: нажмите кнопку покупки в боте.');
+    }
+  }
+</script>
+</body>
+</html>
