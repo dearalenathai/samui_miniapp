@@ -223,17 +223,61 @@
 <body>
 <div class="app">
 
-  <!-- ═══ HOME ═══ -->
-  <div class="screen active" id="screen-home">
-    <div class="hero">
-      <div class="hero-badge">🌴 Тревел-гайд 2025</div>
-      <div class="hero-title">Ко Самуи</div>
-      <div class="hero-subtitle">Всё об острове — для жизни и путешествий</div>
-      <div class="hero-waves"></div>
+  <!-- ═══ PAYWALL SCREEN ═══ -->
+  <div class="screen active" id="screen-paywall">
+    <div style="background:linear-gradient(160deg,#0D4F5E 0%,#1A6B7C 45%,#2A8A9E 100%);padding:52px 24px 44px;position:relative;overflow:hidden;flex-shrink:0">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:28px;background:var(--sand);clip-path:ellipse(55% 100% at 50% 100%)"></div>
+      <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;padding:4px 14px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">🌴 Тревел-гайд 2025</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.6rem;color:#fff;line-height:1.1;margin-bottom:8px">Ко Самуи</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6">Полный гайд по острову — пляжи, еда, жильё, визы.<br>Каждая локация проверена лично.</div>
+    </div>
+
+    <div class="scroll-content" style="padding:20px 16px 32px">
+
+      <div class="author-card">
+        <div class="author-avatar">A</div>
+        <div>
+          <div class="author-name">Алена Дорр</div>
+          <div class="author-desc">Живу на Самуи. Делюсь только проверенным опытом.</div>
+        </div>
+      </div>
+
+      <p class="section-label">Что внутри гайда</p>
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">🏖</span><div><strong>9 пляжей</strong> — включая секретные, которых нет в гугле</div></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">🛕</span><div><strong>Достопримечательности</strong> — топ мест и все смотровые</div></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">🍜</span><div><strong>30+ ресторанов и кафе</strong> по районам острова</div></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">🛵</span><div><strong>Транспорт</strong> — как добраться и передвигаться</div></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">🏥</span><div><strong>Медицина, визы, связь</strong> — всё практическое</div></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px"><span style="font-size:18px">💬</span><div><strong>Telegram-чаты</strong> русскоязычного сообщества</div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--ocean-dark);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:12px">
+        <div style="font-size:32px;margin-bottom:8px">⭐</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:#fff;margin-bottom:6px">Полный доступ</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.65);margin-bottom:20px;line-height:1.5">Один раз — навсегда.<br>Гайд регулярно обновляется.</div>
+        <button onclick="requestPremium()" style="width:100%;background:linear-gradient(135deg,#C8961A,#a87a10);color:#fff;border:none;border-radius:100px;padding:15px 24px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;letter-spacing:0.3px">⭐ Купить доступ за Stars</button>
+      </div>
+
+      <div class="tip" style="margin-bottom:0">
+        <strong>Как это работает:</strong> нажмите кнопку → напишите боту → оплатите Stars → получите ссылку с полным доступом.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ HOME (только для premium) ═══ -->
+  <div class="screen" id="screen-home">
+    <div style="background:linear-gradient(160deg,#0D4F5E 0%,#1A6B7C 45%,#2A8A9E 100%);padding:44px 20px 36px;position:relative;overflow:hidden;flex-shrink:0">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:28px;background:var(--sand);clip-path:ellipse(55% 100% at 50% 100%)"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:2.4rem;color:#fff;line-height:1.1;margin-bottom:6px">Ко Самуи</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.7)">Полный гайд · все разделы открыты ✅</div>
     </div>
     <div class="scroll-content">
       <div class="home-pad">
-
         <div class="author-card">
           <div class="author-avatar">A</div>
           <div>
@@ -241,45 +285,13 @@
             <div class="author-desc">Живу на Самуи и делюсь личным опытом. Каждая локация проверена лично.</div>
           </div>
         </div>
-
-        <!-- Premium status shown dynamically -->
-        <div id="premium-status-block" style="display:none" class="premium-status">
-          <div class="premium-status-icon">⭐</div>
-          <div class="premium-status-text">Полный доступ активен</div>
-        </div>
-        <div id="premium-promo-block" class="premium-banner" onclick="requestPremium()">
-          <div class="premium-banner-icon">⭐</div>
-          <div class="premium-banner-text">
-            <div class="premium-banner-title">Получить полный доступ</div>
-            <div class="premium-banner-sub">Секретные пляжи, все рестораны, смотровые, советы</div>
-          </div>
-          <div class="premium-banner-arrow">›</div>
-        </div>
-
-        <p class="section-label">Быстрая навигация</p>
+        <p class="section-label">Разделы гайда</p>
         <div class="quick-cards">
-          <div class="quick-card" onclick="switchTab('sights')">
-            <div class="quick-card-icon">🛕</div>
-            <div class="quick-card-title">Что смотреть</div>
-            <div class="quick-card-sub">Топ мест и смотровые</div>
-          </div>
-          <div class="quick-card" onclick="switchTab('beaches')">
-            <div class="quick-card-icon">🏖</div>
-            <div class="quick-card-title">Пляжи</div>
-            <div class="quick-card-sub">Популярные и секретные</div>
-          </div>
-          <div class="quick-card" onclick="switchTab('transport')">
-            <div class="quick-card-icon">🛵</div>
-            <div class="quick-card-title">Транспорт</div>
-            <div class="quick-card-sub">Как добраться и ездить</div>
-          </div>
-          <div class="quick-card" onclick="switchTab('food')">
-            <div class="quick-card-icon">🍜</div>
-            <div class="quick-card-title">Еда</div>
-            <div class="quick-card-sub">Рестораны по районам</div>
-          </div>
+          <div class="quick-card" onclick="switchTab('sights')"><div class="quick-card-icon">🛕</div><div class="quick-card-title">Что смотреть</div><div class="quick-card-sub">Топ мест и смотровые</div></div>
+          <div class="quick-card" onclick="switchTab('beaches')"><div class="quick-card-icon">🏖</div><div class="quick-card-title">Пляжи</div><div class="quick-card-sub">Включая секретные</div></div>
+          <div class="quick-card" onclick="switchTab('transport')"><div class="quick-card-icon">🛵</div><div class="quick-card-title">Транспорт</div><div class="quick-card-sub">Как добраться и ездить</div></div>
+          <div class="quick-card" onclick="switchTab('food')"><div class="quick-card-icon">🍜</div><div class="quick-card-title">Еда</div><div class="quick-card-sub">30+ мест по районам</div></div>
         </div>
-
         <p class="section-label">Когда ехать</p>
         <div class="card">
           <div class="season-grid">
@@ -290,17 +302,15 @@
           </div>
           <div class="tip" style="margin-bottom:0"><strong>Совет автора:</strong> Лучшее время — лето. Самое красивое море, яркие краски. Мало туристов и ниже цены.</div>
         </div>
-
         <p class="section-label">Районы острова</p>
         <div class="district-grid">
-          <div class="district-card"><div class="district-name">Чавенг</div><div class="district-vibe">Самый оживлённый</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">шопинг</span><span class="dtag">ночная жизнь</span></div></div>
-          <div class="district-card"><div class="district-name">Ламаи</div><div class="district-vibe">Спокойнее Чавенга</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">кафе</span><span class="dtag">рынки</span></div></div>
-          <div class="district-card"><div class="district-name">Бопхут</div><div class="district-vibe">Рыбацкий колорит</div><div class="dtags"><span class="dtag">рестораны</span><span class="dtag">атмосфера</span></div></div>
-          <div class="district-card"><div class="district-name">Мае Нам</div><div class="district-vibe">Тихий север</div><div class="dtags"><span class="dtag">длинный пляж</span><span class="dtag">дёшево</span></div></div>
-          <div class="district-card"><div class="district-name">Талинг Нгам</div><div class="district-vibe">Уединённый запад</div><div class="dtags"><span class="dtag">закаты</span><span class="dtag">виллы</span></div></div>
-          <div class="district-card"><div class="district-name">Натон</div><div class="district-vibe">Центр острова</div><div class="dtags"><span class="dtag">паром</span><span class="dtag">банки</span></div></div>
+          <div class="district-card"><div class="district-name">Чавенг</div><div class="district-vibe">Самый оживлённый</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">шопинг</span></div></div>
+          <div class="district-card"><div class="district-name">Ламаи</div><div class="district-vibe">Спокойнее Чавенга</div><div class="dtags"><span class="dtag">пляж</span><span class="dtag">кафе</span></div></div>
+          <div class="district-card"><div class="district-name">Бопхут</div><div class="district-vibe">Рыбацкий колорит</div><div class="dtags"><span class="dtag">рестораны</span></div></div>
+          <div class="district-card"><div class="district-name">Мае Нам</div><div class="district-vibe">Тихий север</div><div class="dtags"><span class="dtag">длинный пляж</span></div></div>
+          <div class="district-card"><div class="district-name">Талинг Нгам</div><div class="district-vibe">Уединённый запад</div><div class="dtags"><span class="dtag">закаты</span></div></div>
+          <div class="district-card"><div class="district-name">Натон</div><div class="district-vibe">Центр острова</div><div class="dtags"><span class="dtag">паром</span></div></div>
         </div>
-
       </div>
     </div>
   </div>
@@ -690,40 +700,34 @@
 </div>
 
 <script>
-  let isPremium = false;
-
-  // ─── Telegram WebApp init ───
   const tg = window.Telegram?.WebApp;
   if (tg) {
     tg.expand();
     tg.ready();
     tg.setHeaderColor('#0D4F5E');
     tg.setBackgroundColor('#F5F0E8');
-
-    // Check premium from URL param (set by bot when opening)
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('premium') === '1') {
-      setPremium(true);
-    }
   }
 
-  function setPremium(val) {
-    isPremium = val;
+  // Check premium from URL param
+  const params = new URLSearchParams(window.location.search);
+  const isPremium = params.get('premium') === '1';
 
-    // Toggle status blocks on home
-    const statusBlock = document.getElementById('premium-status-block');
-    const promoBlock = document.getElementById('premium-promo-block');
-    if (statusBlock) statusBlock.style.display = val ? 'flex' : 'none';
-    if (promoBlock) promoBlock.style.display = val ? 'none' : 'flex';
-
-    // Toggle all locked sections
+  if (isPremium) {
+    // Unlock all premium content
+    document.getElementById('screen-paywall').classList.remove('active');
+    document.getElementById('screen-home').classList.add('active');
+    document.getElementById('nav-home').classList.add('active');
+    document.querySelector('.bottom-nav').style.display = 'flex';
     const sections = ['beaches', 'sights', 'food', 'practical'];
     sections.forEach(s => {
       const locked = document.getElementById(`premium-${s}-locked`);
       const content = document.getElementById(`premium-${s}-content`);
-      if (locked) locked.style.display = val ? 'none' : 'block';
-      if (content) content.style.display = val ? 'block' : 'none';
+      if (locked) locked.style.display = 'none';
+      if (content) content.style.display = 'block';
     });
+  } else {
+    // Show paywall, hide nav
+    document.querySelector('.bottom-nav').style.display = 'none';
   }
 
   function switchTab(name) {
@@ -737,11 +741,9 @@
 
   function requestPremium() {
     if (tg) {
-      // Close the Mini App and send data to bot to initiate payment
       tg.sendData(JSON.stringify({ action: 'buy_premium' }));
     } else {
-      // Fallback for browser testing
-      alert('В Telegram: нажмите кнопку покупки в боте.');
+      alert('Откройте через Telegram-бота для оплаты.');
     }
   }
 </script>
